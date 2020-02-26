@@ -80,11 +80,30 @@ def move_player_pos(mult, rot_disp):
     y = player.pos[1] + math.cos(rad(player.rot + rot_disp)) * SPEED * mult
     player.pos = (x, y)
 
+def get_middle(wall):
+    """return middle point coords of the wall"""
+    p1 = wall[0]
+    p2 = wall[1]
+    x = (p1[0] + p2[0])/2
+    y = (p1[1] + p2[1])/2
+    return [x, y]
+
+
+def distance(p1, p2):
+    """Distance between two points"""
+    return math.sqrt((p1[0] - p2[0])**2 + (p1[1] - p2[1])**2)
+
+def wall_distance(wall):
+    """Return distance between wall center and player pos"""
+    return distance(get_middle(wall), player.pos)
+
+def sort_walls(walls):
+    return sorted(walls, key=wall_distance, reverse=True)
+    
 
 def run():
     """Main game loop"""
     running = True
-    prev_time = time.time()
 
     while running:
         for event in pygame.event.get():
@@ -169,7 +188,8 @@ def run():
         pygame.draw.rect(split_screen, CEILING_COLOR, pygame.Rect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT / 2))
         pygame.draw.rect(split_screen, FLOOR_COLOR, pygame.Rect(0, SCREEN_HEIGHT / 2, SCREEN_WIDTH, SCREEN_HEIGHT / 2))
 
-        for wall in WALLS:
+        sorted_walls = sort_walls(WALLS)
+        for wall in sorted_walls:
             # Wall absolute positions
             x1 = wall[0][0]
             y1 = wall[0][1]
