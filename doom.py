@@ -14,7 +14,7 @@ import time
 
 WIDTH = 1200
 HEIGHT = 600
-SCREENS = 3
+SCREENS = 2
 SCREEN_WIDTH = WIDTH / SCREENS
 SCREEN_HEIGHT = HEIGHT
 
@@ -63,7 +63,7 @@ def screen_coords(x, y):
 
 
 def rad(degrees):
-	return degrees / 180 * math.pi;
+	return degrees / 180 * math.pi
 
 
 def intersect(x1, y1, x2, y2):
@@ -108,42 +108,7 @@ def run():
 
 		split_screen = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
 
-		###########################################################################
-		# SCREEN 1: STATIC WORLD
-
-		# Clear split screen
-
-		split_screen.fill((0, 0, 0))
-
-		# Draw wall
-
-		for wall in WALLS:
-			# Wall absolute positions
-			x1 = wall[0][0]
-			y1 = wall[0][1]
-			x2 = wall[1][0]
-			y2 = wall[1][1]
-			
-			pygame.draw.line(split_screen, wall[2],
-				screen_coords(x1, y1),
-				screen_coords(x2, y2), 1)	
-
-		# Draw player
-
-		pygame.draw.line(split_screen, PLAYER_RAY_COLOR,
-			screen_coords(player.pos[0], player.pos[1]),
-			screen_coords(
-				player.pos[0] + math.sin(rad(player.rot)) * RAY_LENGTH,
-				player.pos[1] + math.cos(rad(player.rot)) * RAY_LENGTH), 1)
-		pygame.draw.line(split_screen, PLAYER_COLOR,
-			screen_coords(player.pos[0], player.pos[1]),
-			screen_coords(player.pos[0], player.pos[1]), 1)
-
-		# Render split screen
-
-		screen.blit(split_screen, (0, 0))
-
-		###########################################################################
+		
 		# SCREEN 2: STATIC PLAYER
 
 		# Clear split screen
@@ -186,7 +151,7 @@ def run():
 
 		# Render split screen
 
-		screen.blit(split_screen, (SCREEN_WIDTH, 0))
+		screen.blit(split_screen, (0, 0))
 		
 		###########################################################################
 		# SCREEN 3: PERSPECTIVE
@@ -249,13 +214,11 @@ def run():
 
 		# Render split screen
 
-		screen.blit(split_screen, (SCREEN_WIDTH * 2, 0))
+		screen.blit(split_screen, (SCREEN_WIDTH, 0))
 
 		# Render split screen lines
 
-		pygame.draw.line(screen, (255, 255, 255),
-			(SCREEN_WIDTH, 0),
-			(SCREEN_WIDTH, SCREEN_HEIGHT), 2)
+
 		pygame.draw.line(screen, (255, 255, 255),
 			(SCREEN_WIDTH * 2, 0),
 			(SCREEN_WIDTH * 2, SCREEN_HEIGHT), 2)
