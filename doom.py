@@ -26,6 +26,10 @@ WALLS = [
 	((-1.0, -1.0), (-1.0, 1.0), (150, 255, 150)),
 	((-10.0, -1.0), (-1.0, 1.0), (255, 255, 255)),
 	]
+
+# TODO: order walls from farest to nearest to player
+# https://github.com/mirrorworld/DoomStyleRenderer/blob/39f468a52a3a61d3a6136e902e84443e5146b78b/world.py#L56
+
 WALL_HEIGHT = 0.25
 
 SPEED = 0.05
