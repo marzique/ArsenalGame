@@ -50,7 +50,6 @@ MOUSE_SENSITIVITY = 0.15
 
 
 
-
 class Player:
     def __init__(self):
         self.pos = (0.0, 0.0) 
@@ -62,6 +61,9 @@ player = Player()
 pygame.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
+# invisible cursor?
+pygame.mouse.set_visible(False)
+pygame.event.set_grab(True)
 
 
 def screen_coords(x, y):
@@ -88,14 +90,21 @@ def run():
     running = True
     prev_time = time.time()
 
-
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+            ## Get the change in x position of the mouse since last check, and change the angle by it
+            elif event.type == pygame.MOUSEMOTION:
+                x_angular_movement = pygame.mouse.get_rel()[0]
+                player.rot += x_angular_movement * MOUSE_SENSITIVITY ## This is how mouse sensitivity is done, right?
+
 
         # Handle keys
         keys = pygame.key.get_pressed()
+
+        if keys[pygame.K_ESCAPE]:
+            running = False
         
         if keys[pygame.K_LEFT]:
             player.rot -= ROT_SPEED
@@ -111,9 +120,7 @@ def run():
         if keys[pygame.K_a]:
             move_player_pos(-1, 90)
         
-        ## Get the change in x position of the mouse since last check, and change the angle by it
-        x_angular_movement = pygame.mouse.get_rel()[0]
-        player.rot += x_angular_movement * MOUSE_SENSITIVITY ## This is how mouse sensitivity is done, right?
+        
 
 
         # Set up split screen rendering surface
