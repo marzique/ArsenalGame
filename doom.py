@@ -232,4 +232,7 @@ def run():
         
         # Sleep
         clock.tick(FPS)
-run()
+
+
+if __name__ == '__main__':
+    run()
