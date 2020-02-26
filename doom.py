@@ -12,8 +12,8 @@ import math
 import time
 
 
-WIDTH = 1200
-HEIGHT = 600
+WIDTH = 1400
+HEIGHT = 800
 SCREENS = 2
 SCREEN_WIDTH = WIDTH / SCREENS
 SCREEN_HEIGHT = HEIGHT
@@ -34,21 +34,26 @@ WALL_HEIGHT = 0.25
 
 SPEED = 0.05
 ROT_SPEED = 2
-RAY_LENGTH = 0.1
+
+TOP_ZOOM = 5
+RAY_LENGTH = 0.1 / TOP_ZOOM
 
 PLAYER_COLOR = (0, 255, 0)
 PLAYER_RAY_COLOR = (255, 0, 0)
 
 CEILING_COLOR = (100, 130, 200)
-FLOOR_COLOR = (30, 30, 50)
+FLOOR_COLOR = (10, 10, 10)
 
 FRAME_MIN = 0.016
 
 
+
+
+
 class Player:
 	def __init__(self):
-		self.pos = (0., 0.) 
-		self.rot = 0. # 0 is north, clockwise, degrees
+		self.pos = (0.0, 0.0) 
+		self.rot = 0.0 # 0 is north, clockwise, degrees
 
 
 player = Player()
@@ -82,6 +87,7 @@ def run():
 	running = True
 	prev_time = time.time()
 
+
 	while running:
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
@@ -105,18 +111,12 @@ def run():
 			move_player_pos(-1, 90)
 
 		# Set up split screen rendering surface
-
 		split_screen = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
-
 		
-		# SCREEN 2: STATIC PLAYER
-
-		# Clear split screen
-
+		# SCREEN 1: STATIC PLAYER
 		split_screen.fill((0, 0, 0))
 
-		# Draw wall
-		
+		# Draw each wall
 		for wall in WALLS:
 			# Wall absolute positions
 			x1 = wall[0][0]
@@ -125,10 +125,10 @@ def run():
 			y2 = wall[1][1]
 
 			# Wall positions relative to player's position
-			px1 = x1 - player.pos[0]
-			py1 = y1 - player.pos[1]
-			px2 = x2 - player.pos[0]
-			py2 = y2 - player.pos[1]
+			px1 = (x1 - player.pos[0]) / TOP_ZOOM
+			py1 = (y1 - player.pos[1]) / TOP_ZOOM
+			px2 = (x2 - player.pos[0]) / TOP_ZOOM
+			py2 = (y2 - player.pos[1]) / TOP_ZOOM
 
 			# Wall positions relative to player's position and rotation
 			rx1 = math.cos(rad(-player.rot)) * px1 + math.sin(rad(-player.rot)) * py1
@@ -150,13 +150,10 @@ def run():
 			screen_coords(0, 0), 1)
 
 		# Render split screen
-
 		screen.blit(split_screen, (0, 0))
 		
 		###########################################################################
-		# SCREEN 3: PERSPECTIVE
-
-		# Clear split screen
+		# SCREEN 2: 2.5D
 
 		split_screen.fill((0, 0, 0))
 
@@ -214,14 +211,7 @@ def run():
 
 		# Render split screen
 
-		screen.blit(split_screen, (SCREEN_WIDTH, 0))
-
-		# Render split screen lines
-
-
-		pygame.draw.line(screen, (255, 255, 255),
-			(SCREEN_WIDTH * 2, 0),
-			(SCREEN_WIDTH * 2, SCREEN_HEIGHT), 2)
+		screen.blit(split_screen, (SCREEN_WIDTH + 1, 0))
 
 		# Update screen
 
