@@ -19,7 +19,7 @@ SCREEN_WIDTH = WIDTH / SCREENS
 SCREEN_HEIGHT = HEIGHT
 
 WALLS = [
-	((-1.0, 1.0), (1.0, 1.0), (150, 150, 150)),
+	((-1.0, 1.0), (1.0, 1.0), (50, 150, 150)),
 	((1.0, 1.0), (1.0, -1.0), (255, 150, 255)),
 	((1.0, -1.0), (0.5, -1.5), (150, 255, 255)),
 	((-0.5, -1.5), (-1.0, -1.0), (255, 255, 150)),
@@ -33,8 +33,8 @@ RAY_LENGTH = 0.1
 PLAYER_COLOR = (0, 255, 0)
 PLAYER_RAY_COLOR = (255, 0, 0)
 
-CEILING_COLOR = (0, 0, 255)
-FLOOR_COLOR = (255, 255, 0)
+CEILING_COLOR = (100, 130, 200)
+FLOOR_COLOR = (60, 60, 60)
 
 FRAME_MIN = 0.016
 
@@ -97,7 +97,7 @@ def run():
 			move_player_pos(1, 90)
 		if keys[pygame.K_a]:
 			move_player_pos(-1, 90)
-		
+
 		# Set up split screen rendering surface
 
 		split_screen = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
