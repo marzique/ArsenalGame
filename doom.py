@@ -219,7 +219,12 @@ def run():
         # Render split screen
         screen.blit(split_screen, (SCREEN_WIDTH + 1, 0))
         
-        fps_text = font.render("FPS: " + str(round(clock.get_fps(), 1)), 1, (255, 255, 255))
+        fps = clock.get_fps()
+        if fps >= 50:
+            color = (50, 200, 100)
+        else:
+            color = (200, 50, 100)
+        fps_text = font.render("FPS: " + str(round(fps, 1)), 1, color)
         screen.blit(fps_text, (10, 5))
 
         # Update screen
