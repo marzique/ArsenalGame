@@ -2,7 +2,11 @@
 import pygame
 import math
 from .helpers import rad
+from .world import Wall
 
+# X is left-right
+# Y is forwards-backwards
+# Z is up-down
 
 # screen
 WIDTH = 1400
@@ -14,7 +18,7 @@ FPS = 60
 
 
 # world
-WALLS = [
+walls = [
     ((-1.0, 1.0), (1.0, 1.0), (50, 150, 150)),
     ((1.0, 1.0), (1.0, -1.0), (255, 150, 255)),
     ((-0.5, -1.5), (-1.0, -1.0), (255, 255, 150)),
@@ -23,15 +27,19 @@ WALLS = [
     ((-5.0, -1.0), (-1.0, 1.0), (255, 255, 255)),
     ]
 
-WALL_HEIGHT = 0.25
-CEILING_COLOR = (100, 130, 200)
+WALLS = []
+
+for wall in walls:
+    WALLS.append(Wall(wall[0], wall[1], wall[2]))
+
+CEILING_COLOR = (150, 180, 250)
 FLOOR_COLOR = (10, 10, 10)
 
 
 class Control:
     def __init__(self, player):
         pygame.init()
-        pygame.display.set_caption("Boom")
+        pygame.display.set_caption("Doom")
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
         self.clock = pygame.time.Clock()
         self.font = pygame.font.SysFont("monospace", 15)
@@ -56,8 +64,8 @@ class Control:
     @staticmethod
     def get_middle(wall):
         """return middle point coords of the wall"""
-        p1 = wall[0]
-        p2 = wall[1]
+        p1 = wall.start
+        p2 = wall.end
         x = (p1[0] + p2[0])/2
         y = (p1[1] + p2[1])/2
         return [x, y]
@@ -120,10 +128,10 @@ class Control:
         sorted_walls = self.sort_walls(WALLS) # the closer the wall, the later it drawn
         for wall in sorted_walls:
             # Wall absolute positions
-            x1 = wall[0][0]
-            y1 = wall[0][1]
-            x2 = wall[1][0]
-            y2 = wall[1][1]
+            x1 = wall.start[0]
+            y1 = wall.start[1]
+            x2 = wall.end[0]
+            y2 = wall.end[1]
 
             # Wall positions relative to player's position
             px1 = x1 - self.player.pos[0]
@@ -153,13 +161,13 @@ class Control:
             
             # Wall positions relative to player's position, rotation and perspective
             zx1 = rx1 / ry1
-            zu1 = WALL_HEIGHT  / ry1 # Up   Z
-            zd1 = -WALL_HEIGHT / ry1 # Down Z
+            zu1 = Wall.WALL_HEIGHT  / ry1 # Up   Z
+            zd1 = -Wall.WALL_HEIGHT / ry1 # Down Z
             zx2 = rx2 / ry2
-            zu2 = WALL_HEIGHT  / ry2 # Up   Z
-            zd2 = -WALL_HEIGHT / ry2 # Down Z
+            zu2 = Wall.WALL_HEIGHT  / ry2 # Up   Z
+            zd2 = -Wall.WALL_HEIGHT / ry2 # Down Z
 
-            pygame.draw.polygon(split_screen, wall[2], [
+            pygame.draw.polygon(split_screen, wall.color, [
                 self.screen_coords(zx1, zd1),
                 self.screen_coords(zx1, zu1),
                 self.screen_coords(zx2, zu2),
@@ -175,10 +183,10 @@ class Control:
         # Draw each wall
         for wall in WALLS:
             # Wall absolute positions
-            x1 = wall[0][0]
-            y1 = wall[0][1]
-            x2 = wall[1][0]
-            y2 = wall[1][1]
+            x1 = wall.start[0]
+            y1 = wall.start[1]
+            x2 = wall.end[0]
+            y2 = wall.end[1]
 
             # Wall positions relative to player's position
             px1 = (x1 - self.player.pos[0]) / self.player.TOP_ZOOM
@@ -192,7 +200,7 @@ class Control:
             rx2 = math.cos(rad(-self.player.rot)) * px2 + math.sin(rad(-self.player.rot)) * py2
             ry2 = math.cos(rad(-self.player.rot)) * py2 - math.sin(rad(-self.player.rot)) * px2
 
-            pygame.draw.line(split_screen, wall[2],
+            pygame.draw.line(split_screen, wall.color,
                 self.screen_coords(rx1, ry1),
                 self.screen_coords(rx2, ry2), 1)
 
